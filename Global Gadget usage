@@ -1,6 +1,8 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+from sklearn.linear_model import LinearRegression
+import numpy as np
 
 # Load dataset
 file_path = "Global_Tech_Gadget_Consumption.csv"
@@ -59,3 +61,47 @@ plt.xlabel('Year')
 plt.ylabel('5G Penetration Rate (%)')
 plt.legend(title='Country')
 plt.show()
+# Select top 10 countries by occurrence in dataset
+top_countries = df['Country'].value_counts().head(10).index
+df_top = df[df['Country'].isin(top_countries)]
+
+# Define function for predictive modeling
+def predict_future_trends(df, feature):
+    predictions = {}
+    future_years = np.array(range(df['Year'].max() + 1, df['Year'].max() + 6)).reshape(-1, 1)
+    
+    for country in df['Country'].unique():
+        country_df = df[df['Country'] == country]
+        if len(country_df) < 3:
+            continue  # Skip countries with insufficient data
+        
+        X = country_df[['Year']]
+        y = country_df[feature]
+        
+        model = LinearRegression()
+        model.fit(X, y)
+        future_preds = model.predict(future_years)
+        predictions[country] = future_preds
+    
+    return predictions, future_years.flatten()
+
+# Predict future trends for Smartphone Sales, Laptop Shipments, and 5G Penetration
+smartphone_preds, future_years = predict_future_trends(df_top, 'Smartphone Sales (Millions)')
+laptop_preds, _ = predict_future_trends(df_top, 'Laptop Shipments (Millions)')
+fiveg_preds, _ = predict_future_trends(df_top, '5G Penetration Rate (%)')
+
+# Visualization of Predictions
+def plot_predictions(predictions, feature, ylabel):
+    plt.figure(figsize=(12, 6))
+    for country, preds in predictions.items():
+        plt.plot(future_years, preds, linestyle='--', marker='o', label=f"{country} (Predicted)")
+    plt.title(f'Predicted {feature} for Next 5 Years')
+    plt.xlabel('Year')
+    plt.ylabel(ylabel)
+    plt.legend()
+    plt.show()
+
+# Plot predictions
+plot_predictions(smartphone_preds, 'Smartphone Sales', 'Smartphone Sales (Millions)')
+plot_predictions(laptop_preds, 'Laptop Shipments', 'Laptop Shipments (Millions)')
+plot_predictions(fiveg_preds, '5G Penetration Rate', '5G Penetration Rate (%)')
