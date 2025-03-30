@@ -2,7 +2,8 @@
 Projects
 
 This is a repo with some projects I have been working on in my spare time.
-Primarily working on data visualization, Data cleaning and Decriptive stastitics
-Also perfomed predictive analysis on a number of variables for the top 10 countries over 5 years
+Primarily working on data visualization, Data cleaning, Decriptive stastitics and ML algorithms.
 
-I also worked on a machine learning project utilizing the Wisconsin breast cancer dataset to determine predictive values
+Datasets used were located online from Kaggle, global gadget consumption, Wisconsin breast cancer diagnoses and supply chain data from Data core.
+
+All visulizations are located as well as the code for each in python conducted on Visual code. 
