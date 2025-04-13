@@ -64,3 +64,35 @@ plt.title("Error Distribution of Shipping Delay Predictions")
 plt.show()
 
 print(f"MAE: {mae:.2f}, RMSE: {rmse:.2f}")
+
+from sklearn.linear_model import LinearRegression
+from sklearn.ensemble import GradientBoostingRegressor
+from sklearn.metrics import mean_absolute_error, mean_squared_error
+import matplotlib.pyplot as plt
+
+models = {
+    "Linear Regression": LinearRegression(),
+    "Random Forest": RandomForestRegressor(n_estimators=100, random_state=42),
+    "Gradient Boosting": GradientBoostingRegressor(n_estimators=100, random_state=42)
+}
+
+results = {}
+
+for name, model in models.items():
+    model.fit(X_train, y_train)
+    preds = model.predict(X_test)
+    mae = mean_absolute_error(y_test, preds)
+    rmse = np.sqrt(mean_squared_error(y_test, preds))
+    results[name] = {"MAE": mae, "RMSE": rmse}
+
+# Results DataFrame
+results_df = pd.DataFrame(results).T
+
+# Barplot of MAE and RMSE
+results_df.plot(kind='bar', figsize=(10,6))
+plt.title("Model Comparison")
+plt.ylabel("Error")
+plt.xticks(rotation=0)
+plt.grid(True)
+plt.tight_layout()
+plt.show()
